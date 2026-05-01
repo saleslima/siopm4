@@ -1,0 +1,969 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    position: relative;
+}
+
+.last-occurrence-display {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-left: 5px solid #2e7d32;
+    padding: 10px 15px;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 100;
+    min-width: 150px;
+    animation: slideInFade 0.5s ease-out;
+}
+
+.last-occurrence-display h4 {
+    margin: 0 0 5px 0;
+    color: #1b5e20;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.last-occurrence-display .occurrence-number {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #2e7d32;
+    line-height: 1;
+}
+
+.last-occurrence-display .occurrence-nature {
+    margin: 2px 0 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #388e3c;
+}
+
+@keyframes slideInFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-info {
+    margin: 10px 0;
+}
+
+.user-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.user-info strong {
+    font-weight: 600;
+}
+
+#attendanceForm {
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+#loginScreen, #passwordScreen, #userLoginScreen, #cadastroScreen, #userDashboard {
+    animation: fadeIn 0.2s;
+}
+
+#attendanceScreen {
+    animation: fadeIn 0.2s;
+}
+
+#historico {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: both;
+    min-height: 100px;
+}
+
+#historico:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.form-group textarea {
+    display: block;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+.form-row .form-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.ocorrencias-grid {
+    display: grid;
+    gap: 15px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.ocorrencia-card {
+    background: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ocorrencia-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ocorrencia-card p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#ocorrenciasList h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.dispatcher-layout {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.dispatcher-main {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.vtr-panel {
+    width: 250px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+.vtr-panel h2 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.no-vtrs {
+    color: #999;
+    font-size: 14px;
+    text-align: center;
+}
+
+.ocorrencias-list-dispatcher {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ocorrencia-item-dispatcher {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.ocorrencia-item-dispatcher:hover {
+    background: #f0f0f0;
+}
+
+.ocorrencia-number {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+    min-width: 60px;
+}
+
+.ocorrencia-info {
+    flex: 1;
+    font-size: 14px;
+}
+
+.ocorrencia-info div {
+    margin: 3px 0;
+}
+
+.gravidade-urgente {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.gravidade-normal {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.gravidade-sop {
+    color: #388e3c;
+    font-weight: 600;
+}
+
+.vtr-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.vtr-item {
+    padding: 12px;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vtr-item:hover {
+    background: #e8e8e8;
+}
+
+.vtr-number {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.vtr-occurrence {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 3px;
+}
+
+.vtr-gravidade {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dispatcher-header {
+    margin-bottom: 20px;
+}
+
+.dispatcher-header h1 {
+    margin-bottom: 5px;
+}
+
+.vtr-cadastro-inline {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.vtr-cadastro-inline input {
+    flex: 0 0 200px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.vtr-cadastro-inline input:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.dispatcher-layout-three {
+    display: grid;
+    grid-template-columns: 250px 1fr 250px;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.vtr-panel-left,
+.vtr-panel-right {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.dispatcher-main-center {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.vtr-panel-left h2,
+.vtr-panel-right h2,
+.dispatcher-main-center h2 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.vtr-disponivel-item {
+    padding: 12px;
+    background: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Keep icon crisp while dimming label text */
+.vtr-disponivel-item .vtr-icon {
+    font-size: 18px;
+    opacity: 1;
+    line-height: 1;
+}
+
+/* dimmed class reduces label opacity but leaves icon unaffected */
+.vtr-disponivel-item.dimmed .vtr-label {
+    opacity: 0.4;
+}
+
+/* ensure when original code used inline opacity we fallback to label-only dim */
+.vtr-disponivel-item .vtr-label {
+    margin-left: 8px;
+    font-weight: 600;
+    opacity: 1;
+}
+
+.vtr-disponivel-item:hover {
+    background: #c8e6c9;
+}
+
+.vtr-status-disponivel,
+.vtr-status-ronda-escolar {
+    border: 3px solid #4caf50 !important;
+    background: #e8f5e9 !important;
+}
+
+.vtr-status-operacao-especial {
+    border: 3px solid #ffc107 !important;
+    background: #fff9c4 !important;
+}
+
+.vtr-status-alimentacao {
+    border: 3px solid #ff9800 !important;
+    background: #ffe0b2 !important;
+}
+
+.vtr-status-baixa-mecanica {
+    border: 3px solid #f44336 !important;
+    background: #ffebee !important;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+}
+
+.modal-details {
+    margin: 20px 0;
+}
+
+.modal-details p {
+    margin: 8px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.vtr-assignment-form {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.vtr-assignment-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.vtr-assignment-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.vtr-assignment-form input:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.vtr-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.vtr-select:focus {
+    outline: none;
+    border-color: #333;
+}
+
+.veiculo-item, .pessoa-item {
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    position: relative;
+}
+
+.veiculo-item p, .pessoa-item p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.btn-remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-remove:hover {
+    background: #b71c1c;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.button-group .btn-cadastro,
+.button-group .btn-secondary {
+    flex: 1;
+}
+
+.copom-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#loginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+}
+
+#loginScreen h1 {
+    font-size: 56px;
+    margin-bottom: 60px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.button-group-main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-main-large {
+    padding: 24px 48px;
+    font-size: 22px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    letter-spacing: 1px;
+}
+
+.btn-main-large:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.btn-main-large:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+#userLoginScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+#userLoginScreen h1 {
+    font-size: 42px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+#userLoginForm {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+#userLoginForm .form-group {
+    margin-bottom: 24px;
+}
+
+#userLoginForm label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+#userLoginForm input[type="text"],
+#userLoginForm select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+#userLoginForm input[type="text"]:focus,
+#userLoginForm select:focus {
+    outline: none;
+    border-color: #34495e;
+    box-shadow: 0 0 0 3px rgba(52, 73, 94, 0.1);
+}
+
+#userLoginForm .btn-cadastro {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 12px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    transition: all 0.3s ease;
+}
+
+#userLoginForm .btn-cadastro:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#userLoginForm .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+#cadastroPasswordScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+#cadastroPasswordScreen h1 {
+    font-size: 42px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+#cadastroPasswordForm {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+#cadastroPasswordForm .form-group {
+    margin-bottom: 24px;
+}
+
+#cadastroPasswordForm label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+#cadastroPasswordForm input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+#cadastroPasswordForm input[type="password"]:focus {
+    outline: none;
+    border-color: #34495e;
+    box-shadow: 0 0 0 3px rgba(52, 73, 94, 0.1);
+}
+
+#cadastroPasswordForm .btn-cadastro {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 12px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    transition: all 0.3s ease;
+}
+
+#cadastroPasswordForm .btn-cadastro:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#cadastroPasswordForm .btn-secondary {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+#cadastroScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+}
+
+#cadastroScreen h1 {
+    font-size: 42px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+}
+
+#cadastroForm {
+    width: 100%;
+    max-width: 600px;
+    padding: 40px;
+    background: #fafafa;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+#cadastroForm .form-group {
+    margin-bottom: 24px;
+}
+
+#cadastroForm label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+#cadastroForm input[type="text"],
+#cadastroForm select {
+    width: 100%;
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+#cadastroForm input[type="text"]:focus,
+#cadastroForm select:focus {
+    outline: none;
+    border-color: #34495e;
+    box-shadow: 0 0 0 3px rgba(52, 73, 94, 0.1);
+}
+
+#cadastroForm .btn-cadastro {
+    width: 100%;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 12px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    transition: all 0.3s ease;
+}
+
+#cadastroForm .btn-cadastro:hover {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+#cadastroScreen .btn-secondary {
+    width: 100%;
+    max-width: 600px;
+    padding: 14px;
+    font-size: 16px;
+    margin-top: 12px;
+}
+
+.conditional-fields {
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #e8e8e8;
+}
+
+.ocorrencia-reiterada-nao-lida {
+    animation: blink 1s infinite;
+    background-color: #fff3cd !important;
+}
+
+.ocorrencia-nao-observada {
+    animation: blink-subtle 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes blink-subtle {
+    0%, 49% {
+        opacity: 1;
+    }
+    50%, 100% {
+        opacity: 0.5;
+    }
+}
+
+/* Map Marker Overlay - Blinking/Pulsing Location Icon */
+#btlMap {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.map-marker-overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+}
+
+/* Map Overlay Container for Iframe */
+.map-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.map-overlay-container .map-marker-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Styling for Leaflet usage */
+.leaflet-div-icon {
+    background: transparent !important;
+    border: none !important;
+}
+
+.pin-icon {
+    width: 30px;
+    height: 30px;
+    background: #d32f2f;
+    border: 3px solid #fff;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+    animation: pin-bounce 1s infinite alternate;
+}
+
+.pin-icon::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pin-pulse {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: rgba(211, 47, 47, 0.5);
+    border-radius: 50%;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotateX(55deg);
+    z-index: 1;
+    animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pin-bounce {
+    0% { transform: rotate(-45deg) translateY(0); }
+    100% { transform: rotate(-45deg) translateY(-8px); }
+}
+
+@keyframes pulse-ring {
+    0% { transform: translateX(-50%) rotateX(55deg) scale(0.5); opacity: 0.8; }
+    100% { transform: translateX(-50%) rotateX(55deg) scale(3); opacity: 0; }
+}
+
+.pause-warning {
+    animation: pulse-warning 1s infinite;
+}
+
+@keyframes pulse-warning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.4; }
+}
