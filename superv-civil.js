@@ -158,6 +158,30 @@ async function loadRealtimeStatus() {
                     }
                 }
             });
+            
+            // Calculate operating and pause time for each active user
+            Object.keys(activeByUser).forEach(userId => {
+                const user = userSessions[userId];
+                if (!user) return;
+                
+                let operatingTime = 0;
+                let pauseTime = 0;
+                
+                user.sessions.forEach(session => {
+                    const sessionEnd = session.fimTimestamp || now;
+                    const duration = sessionEnd - session.inicioTimestamp;
+                    
+                    if (session.tipo === 'OPERANDO') {
+                        operatingTime += duration;
+                    } else if (session.tipo === 'BANHEIRO' || session.tipo === 'COFFEE BREAK' || session.tipo === 'JANTA/ALMOÇO') {
+                        pauseTime += duration;
+                    }
+                });
+                
+                activeByUser[userId].operatingTime = operatingTime;
+                activeByUser[userId].pauseTime = pauseTime;
+            });
+            
             sessionsToDisplay = Object.values(activeByUser);
         } else if (currentStatusFilter === 'EXCEDIDO') {
             // Show users who exceeded their total pause time
@@ -289,6 +313,16 @@ async function loadRealtimeStatus() {
             const userId = session.userId;
             const userTotalPause = userSessions[userId]?.totalPauseTime || 0;
             
+            const operatingTimeDisplay = currentStatusFilter === 'ONLINE' && session.operatingTime !== undefined 
+                ? `<div><strong>Tempo Operando:</strong> ${formatDuration(session.operatingTime)}</div>` 
+                : '';
+            const pauseTimeDisplay = currentStatusFilter === 'ONLINE' && session.pauseTime !== undefined 
+                ? `<div><strong>Tempo em Pausa:</strong> ${formatDuration(session.pauseTime)}</div>` 
+                : '';
+            const logoutButton = currentStatusFilter === 'ONLINE' 
+                ? `<button class="btn-logout-user" data-user-id="${session.userId}" data-user-name="${session.userName}" style="padding: 4px 12px; background: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600;">Deslogar</button>` 
+                : '';
+            
             html += `
                 <div style="background: white; padding: 8px 10px; border-left: 4px solid ${statusColor}; border-radius: 4px; margin-bottom: 2px; ${statusClass ? 'animation: blink 1s infinite;' : ''}">
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
@@ -304,10 +338,13 @@ async function loadRealtimeStatus() {
                         <div style="min-width: 80px; text-align: center;">
                             <span style="font-size: 16px; font-weight: 700; color: ${statusColor};">${duration}</span>
                         </div>
+                        ${logoutButton}
                     </div>
                     <div style="display: flex; gap: 15px; font-size: 11px; color: #666; padding-left: 10px;">
                         <div><strong>Início:</strong> ${session.inicio}</div>
                         ${session.fim ? `<div><strong>Fim:</strong> ${session.fim}</div>` : '<div style="color: #1976d2; font-weight: 600;">ONLINE</div>'}
+                        ${operatingTimeDisplay}
+                        ${pauseTimeDisplay}
                         <div><strong>Total Pausas:</strong> ${formatDuration(userTotalPause)}</div>
                     </div>
                 </div>
@@ -316,6 +353,60 @@ async function loadRealtimeStatus() {
         
         html += '</div>';
         realtimeContainer.innerHTML = html;
+        
+        // Setup logout buttons
+        document.querySelectorAll('.btn-logout-user').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const userId = btn.getAttribute('data-user-id');
+                const userName = btn.getAttribute('data-user-name');
+                
+                const password = prompt(`Digite a senha de autorização para deslogar ${userName}:`);
+                
+                if (password !== 'DAQTA') {
+                    alert('Senha incorreta!');
+                    return;
+                }
+                
+                try {
+                    // End all active pause sessions for this user
+                    const pauseSessionsData = await getData('pauseSessions');
+                    if (pauseSessionsData) {
+                        const updates = {};
+                        Object.entries(pauseSessionsData).forEach(([key, session]) => {
+                            if (session.userId === userId && !session.fim && !session.fimTimestamp) {
+                                const endTime = Date.now();
+                                updates[`pauseSessions/${key}`] = {
+                                    ...session,
+                                    fim: new Date(endTime).toLocaleString('pt-BR'),
+                                    fimTimestamp: endTime,
+                                    duracao: endTime - session.inicioTimestamp
+                                };
+                            }
+                        });
+                        
+                        for (const [path, data] of Object.entries(updates)) {
+                            await updateData(path, data);
+                        }
+                    }
+                    
+                    // Remove from active sessions
+                    const activeSessions = await getData('activeSessions') || {};
+                    const sessionToRemove = Object.keys(activeSessions).find(key => 
+                        activeSessions[key].userId === userId
+                    );
+                    
+                    if (sessionToRemove) {
+                        const { removeData } = await import('./database.js');
+                        await removeData(`activeSessions/${sessionToRemove}`);
+                    }
+                    
+                    alert(`Usuário ${userName} deslogado com sucesso!`);
+                    await loadRealtimeStatus();
+                } catch (error) {
+                    alert('Erro ao deslogar usuário: ' + error.message);
+                }
+            });
+        });
         
     } catch (error) {
         console.error('Error loading realtime status:', error);
