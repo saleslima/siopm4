@@ -928,6 +928,36 @@ function setupCallClassificationButtons() {
                 return;
             }
 
+            // Validate phone number format
+            const digitsOnly = telefone.replace(/\D/g, '');
+            
+            if (digitsOnly.length < 10) {
+                alert('Telefone inválido. Deve ter DDD (2 dígitos) + número.\n\nFormato esperado:\n- DDD + 8 dígitos (se não iniciar com 9)\n- DDD + 9 dígitos (se iniciar com 9)');
+                telefoneInput.focus();
+                return;
+            }
+            
+            // Check if DDD is valid (2 digits)
+            if (digitsOnly.length >= 2) {
+                const firstDigitAfterDDD = digitsOnly.charAt(2);
+                
+                if (firstDigitAfterDDD === '9') {
+                    // Should have 11 digits total (DDD + 9)
+                    if (digitsOnly.length !== 11) {
+                        alert('Telefone inválido. Número com 9 após DDD deve ter 11 dígitos no total.\n\nFormato: (XX) 9XXXX-XXXX');
+                        telefoneInput.focus();
+                        return;
+                    }
+                } else {
+                    // Should have 10 digits total (DDD + 8)
+                    if (digitsOnly.length !== 10) {
+                        alert('Telefone inválido. Número sem 9 após DDD deve ter 10 dígitos no total.\n\nFormato: (XX) XXXX-XXXX');
+                        telefoneInput.focus();
+                        return;
+                    }
+                }
+            }
+
             const classification = btn.getAttribute('data-classification');
             const currentUser = getCurrentUser();
             

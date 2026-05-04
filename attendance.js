@@ -256,6 +256,9 @@ export async function setupPauseSystem() {
     function updateFormState() {
         if (!attendanceFormElement) return;
         
+        // Get classification buttons
+        const classificationButtons = document.querySelectorAll('.btn-classification');
+        
         // Disable form if not OPERANDO
         if (currentPause && currentPause !== 'OPERANDO') {
             attendanceFormElement.style.opacity = '0.4';
@@ -266,6 +269,13 @@ export async function setupPauseSystem() {
             inputs.forEach(input => {
                 input.disabled = true;
             });
+            
+            // Disable classification buttons
+            classificationButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.4';
+                btn.style.cursor = 'not-allowed';
+            });
         } else {
             attendanceFormElement.style.opacity = '1';
             attendanceFormElement.style.pointerEvents = 'auto';
@@ -274,6 +284,13 @@ export async function setupPauseSystem() {
             const inputs = attendanceFormElement.querySelectorAll('input, select, textarea, button');
             inputs.forEach(input => {
                 input.disabled = false;
+            });
+            
+            // Enable classification buttons
+            classificationButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
             });
         }
     }

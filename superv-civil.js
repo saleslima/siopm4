@@ -1,4 +1,4 @@
-import { getData } from './database.js';
+import { getData, updateData } from './database.js';
 import { showMessage, showScreen } from './utils.js';
 import { PASSWORDS } from './constants.js';
 
