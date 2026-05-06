@@ -45,12 +45,32 @@ export async function clearSession() {
     
     if (sessionId) {
         try {
-            const { getData, setData } = await import('./database.js');
+            const { getData, setData, updateData } = await import('./database.js');
             const activeSessions = await getData('activeSessions') || {};
             
+            // Get userId from the active session before deleting it
+            let userId = null;
             if (activeSessions[sessionId]) {
+                userId = activeSessions[sessionId].userId;
                 delete activeSessions[sessionId];
                 await setData('activeSessions', activeSessions);
+            }
+            
+            // End all active pause sessions for this user
+            if (userId) {
+                const pauseSessions = await getData('pauseSessions') || {};
+                const endTime = Date.now();
+                const endTimeLocale = new Date(endTime).toLocaleString('pt-BR');
+                
+                for (const [key, session] of Object.entries(pauseSessions)) {
+                    if (session.userId === userId && !session.fim && !session.fimTimestamp) {
+                        await updateData(`pauseSessions/${key}`, {
+                            fim: endTimeLocale,
+                            fimTimestamp: endTime,
+                            duracao: endTime - session.inicioTimestamp
+                        });
+                    }
+                }
             }
         } catch (error) {
             console.error('Error clearing session:', error);
@@ -60,5 +80,6 @@ export async function clearSession() {
     }
     
     localStorage.removeItem('copomUserSession');
+    localStorage.removeItem('activePause');
 }
 

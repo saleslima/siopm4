@@ -468,11 +468,24 @@ export async function saveAttendance(formData, attendanceMessage) {
         const sequentialNumber = await getNextSequentialNumber(today);
         const currentUser = getCurrentUser();
 
+        let criadoPor = '';
+        let criadoPorLocal = '';
+        if (currentUser) {
+            if (currentUser.tipo === 'MILITAR') {
+                criadoPor = currentUser.graduacao ? `${currentUser.graduacao} ${currentUser.nomeGuerra}` : currentUser.nomeGuerra;
+            } else {
+                criadoPor = currentUser.nomeCompleto || '';
+            }
+            criadoPorLocal = currentUser.paValue || '';
+        }
+
         const attendanceData = {
             numeroRegistro: sequentialNumber,
             dataHora: now.toLocaleString('pt-BR'),
             timestamp: now.getTime(),
             userId: currentUser ? (currentUser.cpf ? currentUser.cpf.replace(/\D/g, '') : currentUser.re) : null,
+            criadoPor: criadoPor,
+            criadoPorLocal: criadoPorLocal,
             ...formData,
             data: today,
             veiculos: veiculos.length > 0 ? veiculos : null,

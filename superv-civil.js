@@ -105,7 +105,12 @@ async function loadRealtimeStatus() {
         }
 
         const now = Date.now();
-        const allSessions = Object.values(pauseSessions);
+        const thirteenHoursAgo = now - (13 * 60 * 60 * 1000);
+        
+        // Filter sessions to only those from the last 13 hours
+        const allSessions = Object.values(pauseSessions).filter(session => 
+            session.inicioTimestamp >= thirteenHoursAgo
+        );
         
         // Group sessions by user to calculate totals
         const userSessions = {};

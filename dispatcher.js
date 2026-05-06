@@ -124,6 +124,22 @@ export async function loadDispatcherOcorrencias(btlNumber, dispatcherContent) {
                 const naturezaCodigo = ocorrencia.natureza.split(' - ')[0];
                 return !hiddenNatures.includes(naturezaCodigo);
             });
+            
+            // Check for VTRs with DISPONIVEL status for more than 10 minutes
+            const vtrsDisponiveis = await getData('vtrsDisponiveis') || {};
+            const tenMinutesAgo = Date.now() - (10 * 60 * 1000);
+            const hasOldDisponivel = Object.values(vtrsDisponiveis).some(vtr => {
+                const status = vtr.status || 'DISPONIVEL';
+                return (status === 'DISPONIVEL' || status === 'RONDA ESCOLAR') && vtr.timestamp < tenMinutesAgo;
+            });
+
+            // Apply blinking style if old disponivel VTRs exist
+            const btnOcultarOcorrencias = document.getElementById('btnOcultarOcorrencias');
+            if (hasOldDisponivel && btnOcultarOcorrencias) {
+                btnOcultarOcorrencias.style.animation = 'blink 1s infinite';
+                btnOcultarOcorrencias.style.background = '#d32f2f';
+                btnOcultarOcorrencias.style.color = 'white';
+            }
 
             filteredBtlOcorrencias.forEach(([key, ocorrencia]) => {
                 const tempoMs = now - ocorrencia.timestamp;
@@ -208,13 +224,16 @@ export async function loadDispatcherOcorrencias(btlNumber, dispatcherContent) {
             }
 
             // Setup "Ocultar Ocorrências" button
-            const btnOcultarOcorrencias = document.getElementById('btnOcultarOcorrencias');
             if (btnOcultarOcorrencias) {
                 // Hide button for supervisors
                 if (isSupervisor) {
                     btnOcultarOcorrencias.style.display = 'none';
                 } else {
-                    btnOcultarOcorrencias.addEventListener('click', () => {
+                    // Remove any existing listeners
+                    const newBtn = btnOcultarOcorrencias.cloneNode(true);
+                    btnOcultarOcorrencias.parentNode.replaceChild(newBtn, btnOcultarOcorrencias);
+                    
+                    newBtn.addEventListener('click', () => {
                         if (hasHiddenOccurrences) {
                             // Show hidden occurrences list
                             showHiddenOcorrenciasList(hiddenOcorrencias, btlNumber);

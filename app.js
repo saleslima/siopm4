@@ -158,6 +158,27 @@ btnBackFromAttendance.addEventListener('click', async () => {
 });
 
 btnLogoutDispatcher.addEventListener('click', async () => {
+    // End all pause sessions before logout
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        const userId = currentUser.cpf ? currentUser.cpf.replace(/\D/g, '') : currentUser.re;
+        const pauseSessions = await getData('pauseSessions');
+        if (pauseSessions) {
+            const endTime = Date.now();
+            const endTimeLocale = new Date(endTime).toLocaleString('pt-BR');
+            
+            for (const [key, session] of Object.entries(pauseSessions)) {
+                if (session.userId === userId && !session.fim && !session.fimTimestamp) {
+                    await updateData(`pauseSessions/${key}`, {
+                        fim: endTimeLocale,
+                        fimTimestamp: endTime,
+                        duracao: endTime - session.inicioTimestamp
+                    });
+                }
+            }
+        }
+    }
+    
     await clearSession();
     setCurrentUser(null);
     showScreen(loginScreen, allScreens);
